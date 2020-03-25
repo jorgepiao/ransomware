@@ -3,6 +3,8 @@
 
 import os
 import socket
+import random
+import hashlib
 
 
 	# listar el contenido del directorio HOME
@@ -43,9 +45,35 @@ def discover():
 	lista_archivos.close()
 
 
+	# Creacion de llave simetrica
+def get_hash():
+		# obtener una cadena de texto aleatoria
+	hashcomputer = os.environ['HOME'] + os.environ['USER'] + socket.gethostname() + str(random.randint(0,10000000000000000000000000))
+		# convetir la cadena de texto en un hash (sha512 .. 128 caracteres)
+	hashcomputer = hashlib.sha512(hashcomputer)
+		# hash con formato mas legible
+	hashcomputer = hashcomputer.hexdigest()
+
+		# recortar el hash a una longitud de 32 caracteres
+	new_key = []
+
+	for k in hashcomputer:
+		if len(new_key) == 32:
+			hashcomputer = ''.join(new_key) # .join convierte una lista en una cadena de texto
+		else:
+			new_key.append(k)
+
+	return hashcomputer
+
+
+
 
 def main():
 	check_internet()
+	discover()
+	hashcomputer = get_hash()
+	#print(hashcomputer)
+	#print(len(hashcomputer))
 
 if __name__ == '__main__':
 	try:
